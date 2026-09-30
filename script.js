@@ -25,15 +25,32 @@ function renderPokemon() {
 }
 
 function pokemonCard(indexPokemon) {
+    const pokemon = allPokemon[indexPokemon];
+    const type = pokemon.types[0].type.name;
+    const color = getPokemonColor(type);
+
     return `
-        <li class="pokemon-card">
-            <img
-                src="${allPokemon[indexPokemon].sprites.front_default}"
-                alt="${allPokemon[indexPokemon].name}"
-            />
-            <h2>${allPokemon[indexPokemon].name}</h2>
+        <li class="pokemon-card" style="background-color: ${color};">
+            <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}" />
+            <h2>${pokemon.name}</h2>
         </li>
     `;
 }
 
 loadPokemon();
+
+function getPokemonColor(type) {
+    const colors = {
+        grass: "#a8d5a2",
+        fire: "#f5b18b",
+        water: "#9ac7eb",
+        bug: "#c5d98b",
+        normal: "#d6d6c2",
+        poison: "#c9a1d9",
+        electric: "#f5df87",
+        ground: "#dfc79c",
+        fairy: "#efbfd5"
+    };
+
+    return colors[type] || "#dddddd";
+}
