@@ -59,3 +59,4 @@ function getPokemonColor(type) {
 
 // Suchleiste soll mit den ersten 3 buchstaden schon passende Pokemon anzeigen
 
+// mit Ladebutton soll man mehr Pokemon im Dex einblenden können
