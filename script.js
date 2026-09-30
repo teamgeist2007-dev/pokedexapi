@@ -40,7 +40,7 @@ function pokemonCard(indexPokemon) {
 loadPokemon();
 
 function getPokemonColor(type) {
-    const colors = {
+    let colors = {
         grass: "#a8d5a2",
         fire: "#f5b18b",
         water: "#9ac7eb",
