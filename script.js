@@ -54,3 +54,8 @@ function getPokemonColor(type) {
 
     return colors[type] || "#dddddd";
 }
+
+// pokemon im dialogfenser öffnen mit den details
+
+// Suchleiste soll mit den ersten 3 buchstaden schon passende Pokemon anzeigen
+
