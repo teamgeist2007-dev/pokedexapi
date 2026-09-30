@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 
 <head>
     <meta charset="UTF-8">
@@ -17,8 +17,8 @@
         <ul id="pokemon-list"></ul>
     </main>
 
-    <dialog id="pokemon-dialog" aria-label="Pokémon details">
-        <button onclick="closeDialog()" aria-label="Close details">Close</button>
+    <dialog id="pokemon-dialog" onclose="document.body.style.overflow = ''">
+        <button onclick="closeDialog()">Schließen</button>
         <div id="dialog-content"></div>
     </dialog>
 

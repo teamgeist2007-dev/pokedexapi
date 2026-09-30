@@ -107,25 +107,9 @@ function statsTemplate(pokemon) {
 
 function closeDialog() {
     document.getElementById("pokemon-dialog").close();
+    document.body.style.overflow = "";
 }
 
-const pokemonDialog = document.getElementById("pokemon-dialog");
-
-pokemonDialog.addEventListener("click", function (event) {
-    const position = pokemonDialog.getBoundingClientRect();
-    const outside = event.clientX < position.left ||
-        event.clientX > position.right ||
-        event.clientY < position.top ||
-        event.clientY > position.bottom;
-
-    if (outside) {
-        closeDialog();
-    }
-});
-
-pokemonDialog.addEventListener("close", function () {
-    document.body.style.overflow = "";
-});
 
 // Suchleiste soll mit den ersten 3 buchstaden schon passende Pokemon anzeigen
 
