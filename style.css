@@ -47,3 +47,47 @@ main {
     font-size: 18px;
     text-transform: uppercase;
 }
+
+.pokemon-card {
+    font-family: inherit;
+    cursor: pointer;
+}
+
+dialog {
+    width: 400px;
+    padding: 24px;
+    border: 1px solid black;
+    border-radius: 15px;
+    box-sizing: border-box;
+    text-align: center;
+    background-color: rgb(162, 169, 236);
+    
+}
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.dialog-image {
+    width: 200px;
+    height: 200px;
+}
+
+#dialog-content h2 {
+    text-transform: uppercase;
+}
+
+.stats-list {
+    padding: 0;
+    list-style: none;
+}
+
+.stats-list li {
+    margin-bottom: 8px;
+}
+
+dialog button {
+    padding: 8px 16px;
+    cursor: pointer;
+    background-color: rgb(147, 240, 167);
+}

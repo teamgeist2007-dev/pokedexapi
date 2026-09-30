@@ -30,9 +30,13 @@ function pokemonCard(indexPokemon) {
     const color = getPokemonColor(type);
 
     return `
-        <li class="pokemon-card" style="background-color: ${color};">
-            <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}" />
-            <h2>${pokemon.name}</h2>
+        <li>
+            <button class="pokemon-card" onclick="openDialog(${indexPokemon})"
+                style="background-color: ${color};"
+                aria-label="Show details for ${pokemon.name}">
+                <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}" />
+                <h2>${pokemon.name}</h2>
+            </button>
         </li>
     `;
 }
@@ -56,6 +60,72 @@ function getPokemonColor(type) {
 }
 
 // pokemon im dialogfenser öffnen mit den details
+function openDialog(indexPokemon) {
+    const pokemon = allPokemon[indexPokemon];
+    const dialog = document.getElementById("pokemon-dialog");
+
+    document.getElementById("dialog-content").innerHTML =
+        dialogTemplate(pokemon);
+
+    dialog.showModal();
+    document.body.style.overflow = "hidden";
+}
+
+function dialogTemplate(pokemon) {
+    return `
+        <img class="dialog-image" src="${pokemon.sprites.front_default}"
+            alt="${pokemon.name}" />
+        <h2>${pokemon.name}</h2>
+        <p>Type: ${getPokemonTypes(pokemon)}</p>
+        <p>Height: ${pokemon.height / 10} m</p>
+        <p>Weight: ${pokemon.weight / 10} kg</p>
+        <h3>Base stats</h3>
+        <ul class="stats-list">${statsTemplate(pokemon)}</ul>
+    `;
+}
+
+function getPokemonTypes(pokemon) {
+    let types = [];
+
+    for (let i = 0; i < pokemon.types.length; i++) {
+        types.push(pokemon.types[i].type.name);
+    }
+
+    return types.join(", ");
+}
+
+function statsTemplate(pokemon) {
+    let html = "";
+
+    for (let i = 0; i < pokemon.stats.length; i++) {
+        const stat = pokemon.stats[i];
+        html += `<li>${stat.stat.name}: ${stat.base_stat}</li>`;
+    }
+
+    return html;
+}
+
+function closeDialog() {
+    document.getElementById("pokemon-dialog").close();
+}
+
+const pokemonDialog = document.getElementById("pokemon-dialog");
+
+pokemonDialog.addEventListener("click", function (event) {
+    const position = pokemonDialog.getBoundingClientRect();
+    const outside = event.clientX < position.left ||
+        event.clientX > position.right ||
+        event.clientY < position.top ||
+        event.clientY > position.bottom;
+
+    if (outside) {
+        closeDialog();
+    }
+});
+
+pokemonDialog.addEventListener("close", function () {
+    document.body.style.overflow = "";
+});
 
 // Suchleiste soll mit den ersten 3 buchstaden schon passende Pokemon anzeigen
 
