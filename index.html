@@ -15,13 +15,23 @@
     <main>
         <p id="loading">Loading Pokémon...</p>
         <ul id="pokemon-list"></ul>
+
+        <div class="load-more-container">
+            <button id="load-more-button" onclick="loadPokemon()">
+                Weitere 20 laden
+            </button>
+        </div>
     </main>
 
     <dialog id="pokemon-dialog" onclose="document.body.style.overflow = ''">
-        <button onclick="closeDialog()">Schließen</button>
         <div id="dialog-content"></div>
-    </dialog>
 
+        <div class="dialog-buttons">
+            <button onclick="previousPokemon()">←</button>
+            <button onclick="closeDialog()">Schließen</button>
+            <button onclick="nextPokemon()">→</button>
+        </div>
+    </dialog>
 </body>
 
 </html>

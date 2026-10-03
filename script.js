@@ -1,16 +1,49 @@
 let allPokemon = [];
+let currentPokemonIndex = 0;
 
 async function loadPokemon() {
-    for (let pokemonId = 1; pokemonId <= 20; pokemonId++) {
+    const button = document.getElementById("load-more-button");
+    if (button.disabled || allPokemon.length >= 1025) return;
+    setLoading(true);
+    try {
+        await loadNextPokemon();
+        renderPokemon();
+    } catch (error) {
+        document.getElementById("loading").innerText =
+            "Laden fehlgeschlagen. Bitte erneut versuchen.";
+    } finally {
+        setLoading(false);
+    }
+}
+
+async function loadNextPokemon() {
+    const firstId = allPokemon.length + 1;
+    const lastId = Math.min(firstId + 19, 1025);
+    let newPokemon = [];
+
+    for (let pokemonId = firstId; pokemonId <= lastId; pokemonId++) {
         const response = await fetch(
             "https://pokeapi.co/api/v2/pokemon/" + pokemonId
         );
-        const pokemon = await response.json();
-        allPokemon.push(pokemon);
+        if (!response.ok) throw new Error("Laden fehlgeschlagen");
+        newPokemon.push(await response.json());
+    }
+    allPokemon.push(...newPokemon);
+}
+
+function setLoading(isLoading) {
+    const button = document.getElementById("load-more-button");
+
+    button.disabled = isLoading || allPokemon.length >= 1025;
+    button.innerText = isLoading ? "Pokémon werden geladen..." : "Weitere 20 laden";
+
+    if (isLoading) {
+        document.getElementById("loading").innerText = "";
     }
 
-    renderPokemon();
-    document.getElementById("loading").innerHTML = "";
+    if (allPokemon.length >= 1025) {
+        button.innerText = "Alle Pokémon geladen";
+    }
 }
 
 function renderPokemon() {
@@ -32,16 +65,13 @@ function pokemonCard(indexPokemon) {
     return `
         <li>
             <button class="pokemon-card" onclick="openDialog(${indexPokemon})"
-                style="background-color: ${color};"
-                aria-label="Show details for ${pokemon.name}">
+                style="background-color: ${color};">
                 <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}" />
                 <h2>${pokemon.name}</h2>
             </button>
         </li>
     `;
 }
-
-loadPokemon();
 
 function getPokemonColor(type) {
     let colors = {
@@ -59,15 +89,18 @@ function getPokemonColor(type) {
     return colors[type] || "#dddddd";
 }
 
-// pokemon im dialogfenser öffnen mit den details
 function openDialog(indexPokemon) {
+    currentPokemonIndex = indexPokemon;
     const pokemon = allPokemon[indexPokemon];
     const dialog = document.getElementById("pokemon-dialog");
 
     document.getElementById("dialog-content").innerHTML =
         dialogTemplate(pokemon);
 
-    dialog.showModal();
+    if (!dialog.open) {
+        dialog.showModal();
+    }
+
     document.body.style.overflow = "hidden";
 }
 
@@ -76,10 +109,10 @@ function dialogTemplate(pokemon) {
         <img class="dialog-image" src="${pokemon.sprites.front_default}"
             alt="${pokemon.name}" />
         <h2>${pokemon.name}</h2>
-        <p>Type: ${getPokemonTypes(pokemon)}</p>
-        <p>Height: ${pokemon.height / 10} m</p>
-        <p>Weight: ${pokemon.weight / 10} kg</p>
-        <h3>Base stats</h3>
+        <p>Typ: ${getPokemonTypes(pokemon)}</p>
+        <p>Größe: ${pokemon.height / 10} m</p>
+        <p>Gewicht: ${pokemon.weight / 10} kg</p>
+        <h3>Basiswerte</h3>
         <ul class="stats-list">${statsTemplate(pokemon)}</ul>
     `;
 }
@@ -109,6 +142,28 @@ function closeDialog() {
     document.getElementById("pokemon-dialog").close();
     document.body.style.overflow = "";
 }
+
+function previousPokemon() {
+    let indexPokemon = currentPokemonIndex - 1;
+
+    if (indexPokemon < 0) {
+        indexPokemon = allPokemon.length - 1;
+    }
+
+    openDialog(indexPokemon);
+}
+
+function nextPokemon() {
+    let indexPokemon = currentPokemonIndex + 1;
+
+    if (indexPokemon >= allPokemon.length) {
+        indexPokemon = 0;
+    }
+
+    openDialog(indexPokemon);
+}
+
+loadPokemon();
 
 
 // Suchleiste soll mit den ersten 3 buchstaden schon passende Pokemon anzeigen

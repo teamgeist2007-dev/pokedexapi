@@ -86,8 +86,48 @@ dialog::backdrop {
     margin-bottom: 8px;
 }
 
-dialog button {
+.dialog-buttons button {
     padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    background-color: #eeeeee;
     cursor: pointer;
-    background-color: rgb(147, 240, 167);
+    transition: background-color 0.2s;
 }
+
+.dialog-buttons button:hover {
+    background-color: rgb(47, 201, 201);
+}
+
+.dialog-buttons button:focus {
+    outline: none;
+}
+
+.dialog-buttons button:focus-visible {
+    outline: 2px solid black;
+    outline-offset: 3px;
+}
+
+.load-more-container {
+    margin: 30px 0;
+    text-align: center;
+}
+
+#load-more-button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: #eeeeee;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#load-more-button:hover:not(:disabled) {
+    background-color: #cccccc;
+}
+
+#load-more-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
