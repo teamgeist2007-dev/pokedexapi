@@ -5,15 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokédex</title>
+    <link rel="icon" href="assets/icon/PokemonIcon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
 </head>
 
 <body>
-    <h1>Pokédex</h1>
+    <header>
+        <img class="logo" src="assets/icon/PokemonIcon.svg" alt="Pokéball">
+        <h1>Pokédex</h1>
+    </header>
+
+    <div class="search-container">
+        <input id="search-input" type="search" placeholder="Pokémon suchen" oninput="renderPokemon()">
+    </div>
 
     <main>
-        <p id="loading">Loading Pokémon...</p>
+        <p id="loading"></p>
         <ul id="pokemon-list"></ul>
 
         <div class="load-more-container">
@@ -23,7 +31,8 @@
         </div>
     </main>
 
-    <dialog id="pokemon-dialog" onclose="document.body.style.overflow = ''">
+    <dialog id="pokemon-dialog" onclick="closeOutside(event)" onclose="document.body.style.overflow = ''">
+
         <div id="dialog-content"></div>
 
         <div class="dialog-buttons">

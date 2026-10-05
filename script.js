@@ -3,54 +3,70 @@ let currentPokemonIndex = 0;
 
 async function loadPokemon() {
     const button = document.getElementById("load-more-button");
-    if (button.disabled || allPokemon.length >= 1025) return;
+    if (button.disabled) return;
     setLoading(true);
     try {
         await loadNextPokemon();
-        renderPokemon();
     } catch (error) {
         document.getElementById("loading").innerText =
             "Laden fehlgeschlagen. Bitte erneut versuchen.";
-    } finally {
-        setLoading(false);
     }
+    renderPokemon();
+    setLoading(false);
 }
 
 async function loadNextPokemon() {
     const firstId = allPokemon.length + 1;
-    const lastId = Math.min(firstId + 19, 1025);
-    let newPokemon = [];
+    const lastId = firstId + 19;
 
-    for (let pokemonId = firstId; pokemonId <= lastId; pokemonId++) {
+    for (let pokemonId = firstId; pokemonId <= lastId && pokemonId <= 1025; pokemonId++) {
         const response = await fetch(
             "https://pokeapi.co/api/v2/pokemon/" + pokemonId
         );
-        if (!response.ok) throw new Error("Laden fehlgeschlagen");
-        newPokemon.push(await response.json());
+        if (!response.ok) {
+            throw new Error("Laden fehlgeschlagen");
+        }
+        const pokemon = await response.json();
+        allPokemon.push(pokemon);
     }
-    allPokemon.push(...newPokemon);
 }
 
 function setLoading(isLoading) {
     const button = document.getElementById("load-more-button");
-
-    button.disabled = isLoading || allPokemon.length >= 1025;
-    button.innerText = isLoading ? "Pokémon werden geladen..." : "Weitere 20 laden";
-
+    button.disabled = isLoading;
     if (isLoading) {
+        button.innerText = "Pokémon werden geladen...";
         document.getElementById("loading").innerText = "";
+    } else {
+        button.innerText = "Weitere 20 laden";
     }
-
     if (allPokemon.length >= 1025) {
+        button.disabled = true;
         button.innerText = "Alle Pokémon geladen";
     }
 }
 
+function filterPokemon() {
+    const search = document.getElementById("search-input").value.toLowerCase();
+
+    if (search.length < 2) {
+        return allPokemon;
+    }
+
+    const result = allPokemon.filter(function (pokemon) {
+        return pokemon.name.includes(search);
+    });
+
+    return result;
+}
+
 function renderPokemon() {
     const containerRef = document.getElementById("pokemon-list");
+    const result = filterPokemon();
     let html = "";
 
-    for (let indexPokemon = 0; indexPokemon < allPokemon.length; indexPokemon++) {
+    for (let i = 0; i < result.length; i++) {
+        const indexPokemon = allPokemon.indexOf(result[i]);
         html += pokemonCard(indexPokemon);
     }
 
@@ -59,22 +75,22 @@ function renderPokemon() {
 
 function pokemonCard(indexPokemon) {
     const pokemon = allPokemon[indexPokemon];
-    const type = pokemon.types[0].type.name;
-    const color = getPokemonColor(type);
+    const color = getPokemonColor(pokemon.types[0].type.name);
 
     return `
         <li>
             <button class="pokemon-card" onclick="openDialog(${indexPokemon})"
                 style="background-color: ${color};">
-                <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}" />
+                <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
                 <h2>${pokemon.name}</h2>
+                <p>${getPokemonTypes(pokemon)}</p>
             </button>
         </li>
     `;
 }
 
 function getPokemonColor(type) {
-    let colors = {
+    const colors = {
         grass: "#a8d5a2",
         fire: "#f5b18b",
         water: "#9ac7eb",
@@ -85,8 +101,8 @@ function getPokemonColor(type) {
         ground: "#dfc79c",
         fairy: "#efbfd5"
     };
-
-    return colors[type] || "#dddddd";
+    if (colors[type]) return colors[type];
+    return "#dddddd";
 }
 
 function openDialog(indexPokemon) {
@@ -107,7 +123,7 @@ function openDialog(indexPokemon) {
 function dialogTemplate(pokemon) {
     return `
         <img class="dialog-image" src="${pokemon.sprites.front_default}"
-            alt="${pokemon.name}" />
+            alt="${pokemon.name}">
         <h2>${pokemon.name}</h2>
         <p>Typ: ${getPokemonTypes(pokemon)}</p>
         <p>Größe: ${pokemon.height / 10} m</p>
@@ -118,13 +134,16 @@ function dialogTemplate(pokemon) {
 }
 
 function getPokemonTypes(pokemon) {
-    let types = [];
+    let types = "";
 
     for (let i = 0; i < pokemon.types.length; i++) {
-        types.push(pokemon.types[i].type.name);
+        if (i > 0) {
+            types += ", ";
+        }
+        types += pokemon.types[i].type.name;
     }
 
-    return types.join(", ");
+    return types;
 }
 
 function statsTemplate(pokemon) {
@@ -140,7 +159,6 @@ function statsTemplate(pokemon) {
 
 function closeDialog() {
     document.getElementById("pokemon-dialog").close();
-    document.body.style.overflow = "";
 }
 
 function previousPokemon() {
@@ -165,7 +183,3 @@ function nextPokemon() {
 
 loadPokemon();
 
-
-// Suchleiste soll mit den ersten 3 buchstaden schon passende Pokemon anzeigen
-
-// mit Ladebutton soll man mehr Pokemon im Dex einblenden können
