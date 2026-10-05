@@ -21,10 +21,6 @@ header h1 {
     margin: 0;
 }
 
-h1 {
-    text-align: center;
-}
-
 main {
     max-width: 1440px;
     margin: auto;
@@ -53,6 +49,10 @@ main {
     text-align: center;
     font-family: inherit;
     cursor: pointer;
+}
+
+.pokemon-card:hover {
+    filter: brightness(0.9);
 }
 
 .pokemon-card img {
@@ -167,6 +167,37 @@ dialog::backdrop {
     border-radius: 10px;
     box-sizing: border-box;
     font-size: 16px;
+}
+
+#loading-animation {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.spinner {
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    border: 5px solid #eeeeee;
+    border-top-color: #333333;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.no-pokemon {
+    width: 100%;
+    text-align: center;
+    font-size: 18px;
 }
 
 @media (max-width: 400px) {

@@ -33,6 +33,7 @@ async function loadNextPokemon() {
 
 function setLoading(isLoading) {
     const button = document.getElementById("load-more-button");
+    document.getElementById("loading-animation").hidden = !isLoading;
     button.disabled = isLoading;
     if (isLoading) {
         button.innerText = "Pokémon werden geladen...";
@@ -49,7 +50,7 @@ function setLoading(isLoading) {
 function filterPokemon() {
     const search = document.getElementById("search-input").value.toLowerCase();
 
-    if (search.length < 2) {
+    if (search.length < 3) {
         return allPokemon;
     }
 
@@ -70,7 +71,18 @@ function renderPokemon() {
         html += pokemonCard(indexPokemon);
     }
 
+    if (result.length === 0 && allPokemon.length > 0) {
+        html = noPokemonTemplate();
+    }
     containerRef.innerHTML = html;
+}
+
+function noPokemonTemplate() {
+    return `
+        <li class="no-pokemon">
+            Keine Pokémon unter dieser Suche gefunden.
+        </li>
+    `;
 }
 
 function pokemonCard(indexPokemon) {
@@ -161,6 +173,18 @@ function closeDialog() {
     document.getElementById("pokemon-dialog").close();
 }
 
+function closeOutside(event) {
+    const dialog = document.getElementById("pokemon-dialog");
+    const position = dialog.getBoundingClientRect();
+
+    if (event.clientX < position.left ||
+        event.clientX > position.right ||
+        event.clientY < position.top ||
+        event.clientY > position.bottom) {
+        closeDialog();
+    }
+}
+
 function previousPokemon() {
     let indexPokemon = currentPokemonIndex - 1;
 
@@ -182,4 +206,3 @@ function nextPokemon() {
 }
 
 loadPokemon();
-
